@@ -65,6 +65,8 @@ char	**ft_split(char const *s, char c)
 	size_t	j;
 	char	**strs;
 
+	if (!s || c)
+		return (NULL);
 	len = ft_len_strs(s, c);
 	strs = malloc_strs(len, ft_strlen(s));
 	i = 0;
@@ -73,9 +75,8 @@ char	**ft_split(char const *s, char c)
 	{
 		if (*s == c && j != 0)
 		{
-			strs[i][j] = '\0';
+			strs[i++][j] = '\0';
 			j = 0;
-			i++;
 		}
 		else if (*s != c)
 			strs[i][j++] = *s;

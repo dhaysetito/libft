@@ -18,10 +18,14 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	len_s1;
 	size_t	len_s2;
 
+	if (!s1 || !s2)
+		return (NULL);
 	len_s1 = ft_strlen(s1);
 	len_s2 = ft_strlen(s2);
 	join = (char *)malloc((len_s1 + len_s2 + 1) * sizeof(char));
-	join = ft_strdup(s1);
-	ft_strlcat(join, s2, sizeof(len_s2));
+	if (!join)
+		return (NULL);
+	ft_memcpy(join, s1, len_s1);
+	ft_memcpy(join + len_s1, s2, len_s2 + 1);
 	return (join);
 }

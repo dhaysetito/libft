@@ -14,9 +14,9 @@
 
 int	ft_atoi(const char *npt)
 {
-	int	nb;
-	int	i;
-	int	signal;
+	int		nb;
+	size_t	i;
+	int		signal;
 
 	nb = 0;
 	i = 0;
@@ -28,7 +28,7 @@ int	ft_atoi(const char *npt)
 		signal = -1;
 		i++;
 	}
-	if (npt[i] == '+')
+	else if (npt[i] == '+')
 		i++;
 	while (npt[i] >= '0' && npt[i] <= '9')
 	{

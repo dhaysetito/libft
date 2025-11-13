@@ -85,6 +85,9 @@ void test_isprint(void)
 {
 	print_result("ft_isprint", "letra visível", (!!ft_isprint('A') == !!isprint('A')));
 	print_result("ft_isprint", "tab vertical", (!!ft_isprint('\v') == !!isprint('\v')));
+	print_result("ft_isprint", "empty", (!!ft_isprint(' ') == !!isprint(' ')));
+	print_result("ft_isprint", "32", (!!ft_isprint(32) == !!isprint(32)));
+	print_result("ft_isprint", "127", (!!ft_isprint(127) == !!isprint(127)));
 }
 void test_case_conversion(void)
 {
@@ -479,45 +482,50 @@ void test_memcmp(void)
 	/* Equal memory blocks */
 	char s1a[] = "abc";
 	char s2a[] = "abc";
-	print_result("ft_memcmp", "equal blocks", !!ft_memcmp(s1a, s2a, 3) == !!memcmp(s1a, s2a, 3));
+	print_result("ft_memcmp", "equal blocks", ft_memcmp(s1a, s2a, 3) == memcmp(s1a, s2a, 3));
+
+	/* Equal memory blocks */
+	char s1z[] = "Hello";
+	char s2z[] = "Hellz";
+	print_result("ft_memcmp", "err 5 ", ft_memcmp(s1z, s2z, 5) == memcmp(s1z, s2z, 5));
 
 	/* Different memory blocks */
 	char s1b[] = "abc";
 	char s2b[] = "abd";
-	print_result("ft_memcmp", "different bytes", !!ft_memcmp(s1b, s2b, 3) == !!memcmp(s1b, s2b, 3));
+	print_result("ft_memcmp", "different bytes", ft_memcmp(s1b, s2b, 3) == memcmp(s1b, s2b, 3));
 
 	/* Difference in the middle (explicit bytes) */
 	char bin1[5] = {'a', 'b', 'c', 'd', 'e'};
 	char bin2[5] = {'a', 'b', 'X', 'd', 'e'};
-	print_result("ft_memcmp", "third middle difference", !!ft_memcmp(bin2, bin1, 5) == !!memcmp(bin2, bin1, 5));
+	print_result("ft_memcmp", "third middle difference", ft_memcmp(bin2, bin1, 5) == memcmp(bin2, bin1, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(bin2, bin1, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(bin2, bin1, 5));
 
 	/* Simple test */
 	char s1c[] = "aBcdef";
 	char s2c[] = "abcdef";
-	print_result("ft_memcmp", "second middle difference", !!ft_memcmp(s1c, s2c, 5) == !!memcmp(s1c, s2c, 5));
+	print_result("ft_memcmp", "second middle difference", ft_memcmp(s1c, s2c, 5) == memcmp(s1c, s2c, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(s1c, s2c, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(s1c, s2c, 5));
 
 	/* n smaller than first difference (should be equal up to n) */
 	char s1d[] = "abc";
 	char s2d[] = "abd";
-	print_result("ft_memcmp", "short limit (no diff in range)", !!ft_memcmp(s1d, s2d, 2) == !!memcmp(s1d, s2d, 2));
+	print_result("ft_memcmp", "short limit (no diff in range)", ft_memcmp(s1d, s2d, 2) == memcmp(s1d, s2d, 2));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(s1d, s2d, 2));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(s1d, s2d, 2));
 
 	/* Completely different data */
 	char s1e[] = "12345";
 	char s2e[] = "ZZZZZ";
-	print_result("ft_memcmp", "completely different", !!ft_memcmp(s1e, s2e, 5) == !!memcmp(s1e, s2e, 5));
+	print_result("ft_memcmp", "completely different", ft_memcmp(s1e, s2e, 5) == memcmp(s1e, s2e, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(s1e, s2e, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(s1e, s2e, 5));
 
 	/* Zero-length comparison (should return 0) */
 	char s1f[] = "abc";
 	char s2f[] = "xyz";
-	print_result("ft_memcmp", "zero length compare", !!ft_memcmp(s1f, s2f, 0) == !!memcmp(s1f, s2f, 0));
+	print_result("ft_memcmp", "zero length compare", ft_memcmp(s1f, s2f, 0) == memcmp(s1f, s2f, 0));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(s1f, s2f, 0));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(s1f, s2f, 0));
 
@@ -621,6 +629,18 @@ void test_atoi(void)
 	/* Basic negative number */
 	print_result("ft_atoi", "negative number", ft_atoi("-42") == atoi("-42"));
 
+	/* Signal play +-*/
+	print_result("ft_atoi", "signal play +-", ft_atoi("+-42") == atoi("+-42"));
+
+	/* Signal play -+*/
+	print_result("ft_atoi", "signal play -+", ft_atoi("-+42") == atoi("-+42"));
+
+	/* Multiples +*/
+	print_result("ft_atoi", "multiples +", ft_atoi("+++42") == atoi("+++42"));
+
+	/* Multiples -*/
+	print_result("ft_atoi", "multiples -", ft_atoi("---42") == atoi("---42"));
+
 	/* Leading spaces */
 	print_result("ft_atoi", "leading spaces", ft_atoi("   123") == atoi("   123"));
 
@@ -700,24 +720,122 @@ void test_calloc(void)
 #if TEST_PART2 && TEST_SUBSTR
 void test_substr(void)
 {
-	char *res = ft_substr("42 Rio de Janeiro", 3, 6);
-	print_result("ft_substr", "valid slice", strcmp(res, "Rio de") == 0);
+	char *res;
+
+	/* Basic valid slice */
+	res = ft_substr("42 Rio de Janeiro", 3, 6);
+	print_result("ft_substr", "valid slice (Rio de)", strcmp(res, "Rio de") == 0);
 	free(res);
+
+	/* Start inside string, but length bigger than remaining */
 	res = ft_substr("42 Rio de Janeiro", 13, 6);
-	print_result("ft_substr", "half-valid slice", strcmp(res, "eiro") == 0);
+	print_result("ft_substr", "half-valid slice (eiro)", strcmp(res, "eiro") == 0);
+	free(res);
+
+	/* Start at zero */
+	res = ft_substr("Hello World", 0, 5);
+	print_result("ft_substr", "start at zero", strcmp(res, "Hello") == 0);
+	free(res);
+
+	/* Zero length */
+	res = ft_substr("Hello World", 2, 0);
+	print_result("ft_substr", "zero length", strcmp(res, "") == 0);
+	free(res);
+
+	/* Length bigger than string */
+	res = ft_substr("Hi", 0, 50);
+	print_result("ft_substr", "length > size", strcmp(res, "Hi") == 0);
+	free(res);
+
+	/* Start at end → should return empty string */
+	res = ft_substr("Testing", 7, 5);
+	print_result("ft_substr", "start == length (empty)", strcmp(res, "") == 0);
+	free(res);
+
+	/* Start beyond end → must return empty string */
+	res = ft_substr("Testing", 50, 10);
+	print_result("ft_substr", "start > length (empty)", strcmp(res, "") == 0);
+	free(res);
+
+	/* Empty input */
+	res = ft_substr("", 0, 5);
+	print_result("ft_substr", "empty input string", strcmp(res, "") == 0);
+	free(res);
+
+	/* Full extract */
+	res = ft_substr("ABCDE", 0, 5);
+	print_result("ft_substr", "full extract", strcmp(res, "ABCDE") == 0);
+	free(res);
+
+	/* Middle slice */
+	res = ft_substr("ABCDE", 1, 3);
+	print_result("ft_substr", "middle slice (BCD)", strcmp(res, "BCD") == 0);
 	free(res);
 }
 #endif
 
+
 #if TEST_PART2 && TEST_STRJOIN
 void test_strjoin(void)
 {
-	char *res = ft_strjoin("42 ", "Rio");
+	char *res;
+
+	/* Basic join */
+	res = ft_strjoin("42 ", "Rio");
 	print_result("ft_strjoin", "simple concatenation", strcmp(res, "42 Rio") == 0);
 	print_value("ft_strjoin", 0, res);
 	free(res);
+
+	/* Join with empty left */
+	res = ft_strjoin("", "Hello");
+	print_result("ft_strjoin", "left empty", strcmp(res, "Hello") == 0);
+	free(res);
+
+	/* Join with empty right */
+	res = ft_strjoin("Hello", "");
+	print_result("ft_strjoin", "right empty", strcmp(res, "Hello") == 0);
+	free(res);
+
+	/* Join both empty */
+	res = ft_strjoin("", "");
+	print_result("ft_strjoin", "both empty", strcmp(res, "") == 0);
+	free(res);
+
+	/* Join multi-word */
+	res = ft_strjoin("Rio de ", "Janeiro");
+	print_result("ft_strjoin", "multi-word", strcmp(res, "Rio de Janeiro") == 0);
+	free(res);
+
+	/* Join symbols */
+	res = ft_strjoin("<<", ">>");
+	print_result("ft_strjoin", "symbols", strcmp(res, "<<>>") == 0);
+	free(res);
+
+	/* Join long strings */
+	res = ft_strjoin("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "1234567890");
+	print_result("ft_strjoin", "long strings",
+		strcmp(res, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") == 0);
+	free(res);
+
+	/* Join with spaces preserved */
+	res = ft_strjoin("Hello ", "World");
+	print_result("ft_strjoin", "preserve spaces", strcmp(res, "Hello World") == 0);
+	free(res);
+
+	/* Edge case: pointer to empty string inside static memory */
+	const char *a = "";
+	const char *b = "OK";
+	res = ft_strjoin(a, b);
+	print_result("ft_strjoin", "const empty left", strcmp(res, "OK") == 0);
+	free(res);
+
+	/* More weird join */
+	res = ft_strjoin("foo", "\nbar");
+	print_result("ft_strjoin", "newline join", strcmp(res, "foo\nbar") == 0);
+	free(res);
 }
 #endif
+
 
 #if TEST_PART2 && TEST_STRTRIM
 void test_strtrim(void)
@@ -783,8 +901,8 @@ void	test_split(void)
 	free(res);
 
 	// Single character
-	res = ft_split("X", ' ');
-	print_result("ft_split", "single char string", strcmp(res[0], "X") == 0 && res[1] == NULL);
+	res = ft_split("a", ' ');
+	print_result("ft_split", "single char string", strcmp(res[0], "a") == 0 && res[1] == NULL);
 	for (int i = 0; res[i]; i++)
 		free(res[i]);
 	free(res);
@@ -957,7 +1075,6 @@ void test_striteri(void)
 
 #endif
 
-
 #if TEST_PART2 && TEST_FD_FUNCS
 #include <stdio.h>
 #include <fcntl.h>
@@ -965,10 +1082,10 @@ void test_striteri(void)
 #include <limits.h>
 #include "libft.h"
 
-void show_test(const char *label, const char *expected)
+void test_msg(const char *msg)
 {
-	printf(CYAN "\n--- %s ---\n" RESET, label);
-	printf("Expected : " GREEN "%s" RESET, expected);
+	printf(CYAN "\n[TEST] %s\n" RESET, msg);
+	printf(YELLOW "Output: \n" RESET);
 }
 
 void test_fd_functions(void)
@@ -976,60 +1093,64 @@ void test_fd_functions(void)
 	int fd = 1;
 	int fd_err = 2;
 
-	printf(BLUE "\n=== Tests for *_fd functions ===\n" RESET);
+	printf(BLUE "\n========== Tests for *_fd functions ==========\n" RESET);
 
-	// --- Test 1: stdout ---
-	printf(YELLOW "\n[stdout]\n" RESET);
+	/* --- STDOUT --- */
+	printf(YELLOW "\n[STDOUT tests]\n" RESET);
 
-	show_test("ft_putchar_fd('A')", "A\n");
+	test_msg("ft_putchar_fd('A')");
 	ft_putchar_fd('A', fd);
 	ft_putchar_fd('\n', fd);
 
-	show_test("ft_putstr_fd(\"Hello \")", "Hello ");
+	test_msg("ft_putstr_fd(\"Hello \")");
 	ft_putstr_fd("Hello ", fd);
+	printf("\n");
 
-	show_test("ft_putendl_fd(\"World\")", "World\n");
+	test_msg("ft_putendl_fd(\"World\")");
 	ft_putendl_fd("World", fd);
 
-	show_test("ft_putendl_fd(\"new line\")", "new line\n");
+	test_msg("ft_putendl_fd(\"new line\")");
 	ft_putendl_fd("new line", fd);
 
-	show_test("ft_putnbr_fd(42)", "42\n");
+	test_msg("ft_putnbr_fd(42)");
 	ft_putnbr_fd(42, fd);
 	ft_putchar_fd('\n', fd);
 
-	// --- Test 2: stderr ---
-	printf(YELLOW "\n[stderr]\n" RESET);
+	/* --- STDERR --- */
+	printf(YELLOW "\n[STDERR tests]\n" RESET);
 
-	show_test("ft_putstr_fd(\"Error message -> \")", "Error message -> ");
+	test_msg("ft_putstr_fd(\"Error message -> \")");
 	ft_putstr_fd("Error message -> ", fd_err);
+	printf("\n");
 
-	show_test("ft_putnbr_fd(-999)", "-999\n");
+	test_msg("ft_putnbr_fd(-999)");
 	ft_putnbr_fd(-999, fd_err);
 	ft_putchar_fd('\n', fd_err);
 
-	// --- Test 3: negative numbers ---
+	/* --- NEGATIVE NUMBERS --- */
 	printf(YELLOW "\n[Negative number tests]\n" RESET);
 
-	show_test("ft_putnbr_fd(-42)", "-42\n");
+	test_msg("ft_putnbr_fd(-42)");
 	ft_putnbr_fd(-42, fd);
 	ft_putchar_fd('\n', fd);
 
-	show_test("ft_putnbr_fd(INT_MIN)", "-2147483648\n");
+	test_msg("ft_putnbr_fd(INT_MIN)");
 	ft_putnbr_fd(INT_MIN, fd);
 	ft_putchar_fd('\n', fd);
 
-	// --- Test 4: empty string ---
-	printf(YELLOW "\n[Empty string test]\n" RESET);
+	/* --- EMPTY STRINGS --- */
+	printf(YELLOW "\n[Empty string tests]\n" RESET);
 
-	show_test("ft_putstr_fd(\"\")", "");
+	test_msg("ft_putstr_fd(\"\")");
 	ft_putstr_fd("", fd);
+	printf("\n");
 
-	show_test("ft_putendl_fd(\"\")", "\n");
+	test_msg("ft_putendl_fd(\"\")");
 	ft_putendl_fd("", fd);
 
-	// --- Test 5: temp file ---
-	printf(YELLOW "\n[Temp file]\n" RESET);
+	/* --- TEMP FILE --- */
+	printf(YELLOW "\n[Temp file test]\n" RESET);
+
 	int file = open("test_fd_output.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (file < 0)
 	{
@@ -1037,14 +1158,14 @@ void test_fd_functions(void)
 		return;
 	}
 
-	show_test("File -> \"Saving...\n123456\nEnd of test!\n\"",
-			  "Saving...\n123456\nEnd of test!\n");
+	test_msg("Writing to test_fd_output.txt");
+
 	ft_putstr_fd("Saving...\n", file);
 	ft_putnbr_fd(123456, file);
 	ft_putendl_fd("\nEnd of test!", file);
 	close(file);
 
-	printf(GREEN "Result saved in test_fd_output.txt\n" RESET);
+	printf(GREEN "\nSaved output in test_fd_output.txt\n" RESET);
 }
 
 #endif
