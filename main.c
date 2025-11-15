@@ -442,6 +442,13 @@ void test_strncmp(void)
 	/* Case sensitivity test */
 	print_result("ft_strncmp", "case sensitivity",
 		same_sign(ft_strncmp("Rio", "rio", 3), strncmp("Rio", "rio", 3)));
+
+	/* Unsigned (should return 128) */
+	char m1h[] = "t\200";
+	char m2h[] = "t\0";
+	print_result("ft_strncmp", "teste war 2", ft_strncmp(m1h, m2h, 2) == strncmp(m1h, m2h, 2));
+	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_strncmp", ft_strncmp(m1h, m2h, 2));
+	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "strncmp", strncmp(m1h, m2h, 2));
 }
 
 
@@ -516,7 +523,7 @@ void test_memcmp(void)
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(s1d, s2d, 2));
 
 	/* Completely different data */
-	char s1e[] = "12345";
+	char s1e[] = "z2345";
 	char s2e[] = "ZZZZZ";
 	print_result("ft_memcmp", "completely different", ft_memcmp(s1e, s2e, 5) == memcmp(s1e, s2e, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(s1e, s2e, 5));
@@ -529,10 +536,17 @@ void test_memcmp(void)
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(s1f, s2f, 0));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(s1f, s2f, 0));
 
+	/* Unsigned (should return 128) */
+	char s1h[] = "t\200";
+	char s2h[] = "t\0";
+	print_result("ft_memcmp", "teste war 2", ft_memcmp(s1h, s2h, 2) == memcmp(s1h, s2h, 2));
+	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(s1h, s2h, 2));
+	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(s1h, s2h, 2));
+
 	/* Compare binary data with null bytes */
 	char bin3[5] = {'a', '\0', 'b', 'c', 'd'};
 	char bin4[5] = {'a', '\0', 'b', 'x', 'd'};
-	print_result("ft_memcmp", "binary data with nulls", !!ft_memcmp(bin3, bin4, 5) == !!memcmp(bin3, bin4, 5));
+	print_result("ft_memcmp", "binary data with nulls", ft_memcmp(bin3, bin4, 5) == memcmp(bin3, bin4, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "ft_memcmp", ft_memcmp(bin3, bin4, 5));
 	printf(GREEN "[VAL]  %-12s | %-25d\n" RESET, "memcmp", memcmp(bin3, bin4, 5));
 }
@@ -912,6 +926,38 @@ void	test_split(void)
 	print_result("ft_split", "comma delimiter", strcmp(res[0], "um") == 0 && strcmp(res[1], "dois") == 0 && strcmp(res[2], "tres") == 0 && res[3] == NULL);
 	for (int i = 0; res[i]; i++)
 		free(res[i]);
+	free(res);
+
+	// Long sentence
+	res = ft_split("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse", ' ');
+	print_result("ft_split", "long sentence", strcmp(res[0], "lorem") == 0 && strcmp(res[4], "amet,") == 0 && strcmp(res[11], "Suspendisse") == 0 && res[12] == NULL);
+	for (int i = 0; res[i]; i++)
+	{
+		//printf(GREEN "[VAL]  %-12s | %-25s\n" RESET, "ft_split", res[i]);
+		free(res[i]);
+	}
+	free(res);
+
+	// Long sentence 2
+	res = ft_split("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultricies diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.", 'i');
+	print_result("ft_split", "long sentence 2 split 'i'", strcmp(res[0], "lorem ") == 0 && strcmp(res[5], "ng el") == 0 && strcmp(res[17], "es sed, dolor. Cras elementum ultr") == 0 && res[25] == NULL);
+
+	for (int i = 0; res[i]; i++)
+	{
+		//printf(GREEN "[VAL]  %-12s | %-25s\n" RESET, "ft_split", res[i]);
+		free(res[i]);
+	}
+	free(res);
+
+	// No split
+	res = ft_split("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultricies diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.", 'z');
+	print_result("ft_split", "no split", strcmp(res[0], "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultricies diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.") == 0 && res[1] == NULL);
+
+	for (int i = 0; res[i]; i++)
+	{
+		//printf(GREEN "[VAL]  %-12s | %-25s\n" RESET, "ft_split", res[i]);
+		free(res[i]);
+	}
 	free(res);
 }
 #endif
