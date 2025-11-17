@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhde-lim <dhde-lim@student.42.rio>         +#+  +:+       +#+        */
+/*   By: ganselmo <ganselmo@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 21:31:29 by dhde-lim          #+#    #+#             */
-/*   Updated: 2025/11/12 01:53:02 by dhde-lim         ###   ########.fr       */
+/*   Updated: 2025/11/16 23:52:33 by ganselmo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,25 @@ static size_t	ft_len_strs(char const *s, char c)
 	size_t	len;
 	size_t	i;
 	char	*aux;
+	char	set[2];
 
-	aux = ft_strtrim(s, &c);
+	set[0] = c;
+	set[1] = '\0';
+	aux = ft_strtrim(s, set);
 	i = 0;
 	len = 1;
 	if (aux[0] == '\0' || s == NULL || s[0] == '\0')
+	{
+		free(aux);
 		return (0);
+	}
 	while (aux[i])
 	{
 		if (aux[i] == c && aux[i + 1] != c)
 			len++;
 		i++;
 	}
+	free(aux);
 	return (len);
 }
 
